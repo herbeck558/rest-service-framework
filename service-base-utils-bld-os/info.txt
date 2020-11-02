@@ -1,0 +1,37 @@
+#
+# Outlines on how to build using command line from both Windows and Linux.
+#
+
+
+#. On Linux required configuration:
+  1. Download build tools.
+    cd /...YourWorkspaceRootDir
+    service-base-utils-parent-os/whBldToolsInstall.bash
+
+  2. Configure Maven access to Nexus Archive Repositories.
+    cd /...YourWorkspaceRootDir
+    mkdir ~/.m2
+    cp service-base-utils-parent-os/settings.xml ~/.m2/
+
+  3. Set build environment variables.
+    source bldTools/util-1.0.0/bin/whEnv.bash `pwd`
+
+
+#. On Windows required configuration:
+  1. Download build tools.
+    cd /D C:\...YourWorkspaceRootDir
+    service-base-utils-parent-os\whBldToolsInstall.cmd
+
+  2. Configure Maven access to Nexus Archive Repositories.
+    cd /D C:\...YourWorkspaceRootDir
+    mkdir %USERPROFILE%\.m2
+    copy service-base-utils-parent-os\settings.xml %USERPROFILE%\.m2\
+
+  3. Set build environment variables.
+    bldTools\util-1.0.0\bin\whEnv.cmd
+
+
+#. To do a test bld, from YourWorkspaceRootDir do:
+  cd service-base-utils-bld
+  mvn clean
+  mvn install
