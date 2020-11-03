@@ -59,8 +59,7 @@ public class ServiceContext {
 	private String authenticationHeader;
 
 	public enum AuthenticationType {
-		legacy,			// Old behavior that looks for different headers in order
-		apim,			// Header X-IBM-Client-ID
+		none,			// No authentication processing
 		datapower,		// Header X-Watson-UserInfo, Sub-headers: OrgId, UserId
 		datapower_test,	// Header X-Watson-UserInfo, Sub-headers: OrgId, UserId, with tenant override
 		deadbolt,		// Header X-Watson-UserInfo, Sub-header: bluemix-instance-id
@@ -168,7 +167,7 @@ public class ServiceContext {
 			// Process tenant related properties
 
 			// Get and validate authentication type property
-			String authTypeValue = serviceProperties.getProperty(AUTHENTICATION_TYPE_PROPERTY, AuthenticationType.legacy.toString());
+			String authTypeValue = serviceProperties.getProperty(AUTHENTICATION_TYPE_PROPERTY, AuthenticationType.none.toString());
 			try {
 				authenticationType = AuthenticationType.valueOf(authTypeValue);
 			}

@@ -279,20 +279,20 @@ public class MainServletFilter implements Filter {
 				((HttpServletResponse) response).getWriter().print(om.writeValueAsString(se));
 				// Do not pass on request
 			}
-//			else if (serviceContext.getAuthenticationType() != AuthenticationType.legacy &&
-//					(tenantId == null || tenantId.isEmpty()) ) {
-//				// An authentication header is required if not running in legacy mode
-//				logger.log(Level.ERROR, "Error, authentication header not provided - returning 401");
-//				httpResponse.setStatus(Status.UNAUTHORIZED.getStatusCode());
-//				httpResponse.setContentType(MediaType.APPLICATION_JSON);
-//				ServiceError se = new ServiceError(Status.UNAUTHORIZED.getStatusCode());
-//				se.setMessage(Status.UNAUTHORIZED.getReasonPhrase());
-//				se.setDescription("Authentication header not provided");
-//				ObjectMapper om = new ObjectMapper();
-//				om.setSerializationInclusion(Include.NON_NULL);
-//				httpResponse.getWriter().print(om.writeValueAsString(se));
-//				// Request will not get passed on
-//			}
+			else if (serviceContext.getAuthenticationType() != AuthenticationType.none &&
+					(tenantId == null || tenantId.isEmpty()) ) {
+				// An authentication header is required if auth type is not none
+				logger.error("Error, authentication header not provided - returning 401");
+				httpResponse.setStatus(Status.UNAUTHORIZED.getStatusCode());
+				httpResponse.setContentType(MediaType.APPLICATION_JSON);
+				ServiceError se = new ServiceError(Status.UNAUTHORIZED.getStatusCode());
+				se.setMessage(Status.UNAUTHORIZED.getReasonPhrase());
+				se.setDescription("Authentication header not provided");
+				ObjectMapper om = new ObjectMapper();
+				om.setSerializationInclusion(Include.NON_NULL);
+				httpResponse.getWriter().print(om.writeValueAsString(se));
+				// Request will not get passed on
+			}
 			else {
 				// Pass on request unless concurrent limit has been met
 				boolean acquireGranted = false;
@@ -506,26 +506,8 @@ public class MainServletFilter implements Filter {
 		String userInfoHeader = null;
 
 		switch(authType) {
-			case legacy:
-				// First check for X-Watson-UserInfo:bluemix-instance-id (From deadbolt)
-				userInfoHeader = getUserInfoHeaderValue(httpRequest);
-				threadTenantId = getPropertyFromHeaderValue(userInfoHeader, HEADER_CLOUD_BLUEMIX_INSTANCE_ID);
-
-				// If not found, try to get tenant ID from X-IBM-Client-ID (From APIM)
-				if(threadTenantId == null) {
-					String clientId = httpRequest.getHeader(HEADER_DP_CLIENET_ID);
-					if(clientId != null) {
-						clientId = clientId.trim();
-						if(!clientId.isEmpty()) {
-							threadTenantId = clientId;
-						}
-					}
-				}
-				// If not found, try to use X-Watson-UserInfo:orgId (From datapower)
-				if(threadTenantId == null) {
-					threadTenantId = getPropertyFromHeaderValue(userInfoHeader, HEADER_WATSON_ORG_ID);
-					threadUserId = getPropertyFromHeaderValue(userInfoHeader, HEADER_WATSON_USER_ID);
-				}
+			case none:
+				// Do not set thread tenant or user ID values
 				break;
 			case datapower:
 				// Get tenant ID and user ID from header X-Watson-UserInfo
