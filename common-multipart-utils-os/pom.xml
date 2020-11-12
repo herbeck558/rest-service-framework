@@ -1,0 +1,40 @@
+<!--  ************************************** -->
+<!--  (C) Copyright IBM Corp. 2001, 2020     -->
+<!--  SPDX-License-Identifier: Apache-2.0    -->
+<!--  ************************************** -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.ibm.watson.health.services</groupId>
+		<artifactId>service-base-utils-parent-os</artifactId>
+		<version>${revision}</version>
+		<relativePath>../service-base-utils-parent-os/pom.xml</relativePath>
+	</parent>
+	<artifactId>common-multipart-utils-os</artifactId>
+	<name>common-multipart-utils-os</name>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.ibm.websphere.appserver.api</groupId>
+			<artifactId>com.ibm.websphere.appserver.api.jaxrs20</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.ws.rs</groupId>
+			<artifactId>javax.ws.rs-api</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+	</dependencies>
+</project>
