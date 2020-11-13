@@ -514,18 +514,13 @@
 <!-- 		</repository> -->
 <!-- 	</repositories> -->
 	
-<!-- 	<distributionManagement> -->
-<!-- 		<repository> -->
-<!-- 			<id>ibm-releases</id> -->
-<!-- 			<name>IBM WH Releases</name> -->
-<!-- 			<url>https://na.artifactory.swg-devops.com:443/artifactory/wh-cohort-team-release-maven-local</url> -->
-<!-- 		</repository> -->
-<!-- 		<snapshotRepository> -->
-<!-- 			<id>ibm-snapshots</id> -->
-<!-- 			<name>IBM WH Snapshots</name> -->
-<!-- 			<url>https://na.artifactory.swg-devops.com:443/artifactory/wh-cohort-team-snapshot-maven-local</url> -->
-<!-- 		</snapshotRepository> -->
-<!-- 	</distributionManagement> -->
+	<distributionManagement>
+    		<repository>
+      			<id>github</id>
+      			<name>GitHub Packages</name>
+      			<url>https://maven.pkg.github.com/Alvearie/rest-service-framework</url>
+    		</repository>
+  	</distributionManagement>
 
 	<profiles>
 		<profile>
