@@ -175,7 +175,7 @@ public abstract class ServiceVTBase extends ServiceVTUtils {
 			runErrorValidation(request.get(resource).then().log().all(), ContentType.JSON, HttpStatus.SC_NOT_FOUND);
 		} else {
 			runSuccessValidation(request.get(resource).then().log().all(), ContentType.HTML, HttpStatus.SC_OK)
-					.content(StringContains.containsString("<html>"));
+					.content(StringContains.containsString("<html"));
 		}
 	}
 

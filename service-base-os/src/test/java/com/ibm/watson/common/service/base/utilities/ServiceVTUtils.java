@@ -86,8 +86,8 @@ public abstract class ServiceVTUtils {
 	// Connection manager timeout to use in seconds (null uses default)
 	protected static Integer CONNECTION_MANAGER_TIMEOUT = null;
 
-	protected static final String expectedOutputFolder = File.separator + "expectedOutput";
-	protected static final String automationInputFolder = File.separator + "automationInput";
+	protected static final String expectedOutputFolder = "/"+ "expectedOutput";
+	protected static final String automationInputFolder = "/"+ "automationInput";
 
 	// Common HTTP headers
 	protected static final String CORRELATION_ID_NAME = "x-correlation-id";
@@ -460,7 +460,7 @@ public abstract class ServiceVTUtils {
 	}
 
 	protected String getJsonFromFile(Class<?> testclass, String expectedOutputFile) {
-		String expFile = expectedOutputFolder + File.separator + expectedOutputFile;
+		String expFile = expectedOutputFolder + "/"+ expectedOutputFile;
 		return readFileFromResource(testclass, expFile);
 	}
 
@@ -469,7 +469,7 @@ public abstract class ServiceVTUtils {
 	}
 
 	protected String getXMLFromFile(Class<?> testclass, String expectedOutputFile) {
-		String expFile = expectedOutputFolder + File.separator + expectedOutputFile;
+		String expFile = expectedOutputFolder + "/"+ expectedOutputFile;
 		return readFileFromResource(testclass, expFile);
 	}
 
@@ -480,9 +480,9 @@ public abstract class ServiceVTUtils {
 	protected static String getJsonFromFile(Class<?> testclass, String folderType, String fname) {
 		String fileIs = null;
 		if (folderType.equalsIgnoreCase("expectedoutput")) {
-			fileIs = expectedOutputFolder + File.separator + fname;
+			fileIs = expectedOutputFolder + "/"+ fname;
 		} else {
-			fileIs = automationInputFolder + File.separator + fname;
+			fileIs = automationInputFolder + "/"+ fname;
 		}
 
 		return readFileFromResource(testclass, fileIs);
@@ -495,9 +495,9 @@ public abstract class ServiceVTUtils {
 	protected String getXMLFromFile(Class<?> testclass, String folderType, String fname) {
 		String fileIs = null;
 		if (folderType.equalsIgnoreCase("expectedoutput")) {
-			fileIs = expectedOutputFolder + File.separator + fname;
+			fileIs = expectedOutputFolder + "/"+ fname;
 		} else {
-			fileIs = automationInputFolder + File.separator + fname;
+			fileIs = automationInputFolder + "/"+ fname;
 		}
 
 		return readFileFromResource(testclass, fileIs);
@@ -506,9 +506,9 @@ public abstract class ServiceVTUtils {
 	protected String getTextFromFile(Class<?> testclass, String folderType, String fname) {
 		String fileIs = null;
 		if (folderType.equalsIgnoreCase("expectedoutput")) {
-			fileIs = expectedOutputFolder + File.separator + fname;
+			fileIs = expectedOutputFolder + "/"+ fname;
 		} else {
-			fileIs = automationInputFolder + File.separator + fname;
+			fileIs = automationInputFolder + "/"+ fname;
 		}
 
 		return readFileFromResource(testclass, fileIs, true);
@@ -546,7 +546,7 @@ public abstract class ServiceVTUtils {
 	}
 
 	protected String getJsonInputFromFile(Class<?> testclass, String automationInputFile) {
-		String inpFile = automationInputFolder + File.separator + automationInputFile;
+		String inpFile = automationInputFolder + "/"+ automationInputFile;
 		return readFileFromResource(testclass, inpFile);
 	}
 
@@ -826,7 +826,7 @@ public abstract class ServiceVTUtils {
 			// else
 			// is =
 			// DefaultIVT.class.getClass().getClassLoader().getResourceAsStream(automationInputFolder
-			// + File.separator +
+			// + "/"+
 			// filename);
 
 			InputStreamReader isr = new InputStreamReader(is, "UTF-8");
