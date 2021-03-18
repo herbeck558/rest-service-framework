@@ -68,6 +68,9 @@ public class MainServletFilter implements Filter {
 
 	// Header for delegation token (service to service)
 	public static final String HEADER_AUTHORIZATION_TOKEN = "Authorization";
+	
+	// Header for service instance parameters object
+	public static final String  HEADER_WATSON_INSTANCE_PARAMETERS = "x-watson-instance-parameters";
 
 	// Other header names to pass in ThreadLocal storage
 	public static final String HEADER_DP_WATSON_TRAN_ID = "X-DP-Watson-Tran-ID";
@@ -224,7 +227,7 @@ public class MainServletFilter implements Filter {
 			// Save specific headers in thread local storage for later use
 			// The headers to copy could become a service parameter
 			String HEADERS_TO_COPY[] = { HEADER_WATSON_USER_INFO, HEADER_DP_CLIENET_ID, HEADER_DP_WATSON_TRAN_ID,
-					HEADER_AUTHORIZATION_TOKEN };
+					HEADER_AUTHORIZATION_TOKEN, HEADER_WATSON_INSTANCE_PARAMETERS};
 			Map<String, String> headerMap = new HashMap<>();
 			Enumeration<String> headerNames = httpRequest.getHeaderNames();
 			int matchCount = 0;
