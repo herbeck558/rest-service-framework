@@ -469,7 +469,7 @@ public class MainServletFilter implements Filter {
 	private void processCorrelationId(HttpServletRequest httpRequest, HttpServletResponse httpResponse) {
 
 		String correlationId = httpRequest.getHeader(correlationIdHeader);
-		if (StringUtils.containsAny((CharSequence)correlationId, (CharSequence)"<[*\n\\n\r\\r%0d%0D%0a%0A\\025")) {
+		if (StringUtils.containsAny((CharSequence)correlationId, (CharSequence)"<[*\n\r\\")) {
 			throw new ValidationException("Invalid value for " + correlationId);
 		}
 		if (correlationId != null) {
