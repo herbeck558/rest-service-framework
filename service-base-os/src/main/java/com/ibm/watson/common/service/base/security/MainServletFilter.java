@@ -92,6 +92,18 @@ public class MainServletFilter implements Filter {
 	public static final String CACHE_CONTROL_SETTING = "no-store";
 	public static final String HEADER_PRAGMA = "pragma";
 	public static final String PRAGMA_SETTING = "no-cache";
+	
+	// A set of security headers recommended to be set for rest apis
+	// @see https://owasp.org/www-community/Security_Headers
+	// @see https://pages.github.ibm.com/ibmcloud/Security/guidance/secure-coding.html#http-header-best-practices
+	private static final String[][] HEADERS_TO_SET =  {
+				{"X-XSS-Protection", "0"}, 
+				{"X-Content-Type-Options", "nosniff"},
+				{"X-Frame-Options", "deny"},          // or SAMEORIGIN if this was going to a web page
+				{"Content-Security-Policy", "default-src 'none'"}
+		};
+		
+	
 
 	// Tenant/user keys for log4j logging messages
 	private static final String TENANT_ID_KEY = "tenantId"; // Value used in log4j.properties pattern
@@ -507,6 +519,10 @@ public class MainServletFilter implements Filter {
 
 		if (httpResponse.getHeader(HEADER_PRAGMA) == null) {
 			httpResponse.setHeader(HEADER_PRAGMA, PRAGMA_SETTING);
+		}
+		// add security headers to all responses
+		for (String[] header : HEADERS_TO_SET) {
+			httpResponse.setHeader(header[0], header[1]);
 		}
 	}
 
