@@ -87,7 +87,7 @@ public class MainServletFilter implements Filter {
 	// Cross site support header names
 	public static final String HEADER_ACCESS_CONTROL_ORIGIN = "Access-Control-Allow-Origin";
 	public static final String HEADER_STRICT_TRANSPORT_SECURITY = "strict-transport-security";
-	public static final String STRICT_TRANSPORT_SETTING = "31536000; includeSubDomains";
+	public static final String STRICT_TRANSPORT_SETTING = "max-age=31536000; includeSubDomains";
 	public static final String HEADER_CACHE_CONTROL = "cache-control";
 	public static final String CACHE_CONTROL_SETTING = "no-store";
 	public static final String HEADER_PRAGMA = "pragma";
