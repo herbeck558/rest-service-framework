@@ -30,8 +30,8 @@
 	</modules>
 
 	<properties>
-		<base-version>0.0.1</base-version>
-		<revision>${base-version}-SNAPSHOT</revision>
+		<base-version>1.0.0</base-version>
+		<revision>${base-version}</revision>
 	
 		<whCompanyName>IBM Corp</whCompanyName>
 		<whprojectGitRepo>REST-service-framework</whprojectGitRepo>
