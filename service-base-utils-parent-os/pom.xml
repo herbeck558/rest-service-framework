@@ -341,6 +341,11 @@
 						</dependency>
 					</dependencies>
 				</plugin>
+				<plugin>
+					<groupId>org.sonatype.ossindex.maven</groupId>
+					<artifactId>ossindex-maven-plugin</artifactId>
+					<version>3.1.0</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<plugins>
@@ -456,6 +461,26 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.sonatype.ossindex.maven</groupId>
+				<artifactId>ossindex-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>audit-dependencies</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>audit</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<excludeVulnerabilityIds>
+					</excludeVulnerabilityIds>
+
+					<excludeCoordinates>
+					</excludeCoordinates>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
@@ -755,6 +780,13 @@
 				<version>2.9.0</version>
 				<scope>test</scope>
 			</dependency>
+			<!-- explicitly setting groovy version to override that from com.jayway.restassured -->
+			<dependency>
+                        	<groupId>org.codehaus.groovy</groupId>
+                                <artifactId>groovy</artifactId>
+                                <version>2.4.21</version>
+                                <scope>test</scope>
+                        </dependency>
 			<dependency>
 				<groupId>com.jcabi</groupId>
 				<artifactId>jcabi-matchers</artifactId>
@@ -774,7 +806,7 @@
 			<dependency>
 				<groupId>commons-io</groupId>
 				<artifactId>commons-io</artifactId>
-				<version>2.4</version>
+				<version>2.7</version>
 			</dependency>
 			<dependency>
 				<groupId>io.swagger</groupId>
@@ -831,7 +863,7 @@
 			<dependency>
 				<groupId>org.apache.ant</groupId>
 				<artifactId>ant</artifactId>
-				<version>1.9.15</version>
+				<version>1.9.16</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
@@ -849,12 +881,12 @@
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-rt-frontend-jaxrs</artifactId>
-				<version>3.4.1</version>
+				<version>3.4.5</version>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.httpcomponents</groupId>
 				<artifactId>httpclient</artifactId>
-				<version>4.3.3</version>
+				<version>4.5.13</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
