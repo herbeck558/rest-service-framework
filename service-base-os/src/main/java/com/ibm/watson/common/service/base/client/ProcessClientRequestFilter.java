@@ -43,6 +43,26 @@ public class ProcessClientRequestFilter implements ClientRequestFilter {
 				headerMap.putSingle(MainServletFilter.CORRELATION_ID_DEFAULT_HEADER, correlationId);
 			}
 		}
+		
+		//Set the debug flag into the outgoing headers
+		Boolean debug = ServiceThreadLocal.getThreadDebug();
+		if (debug != null) {
+		  MultivaluedMap<String,Object> outgoingHeaders = requestContext.getHeaders();
+      outgoingHeaders.putSingle(MainServletFilter.HEADER_DEBUG, debug.toString());
+		}
+
+		//Get the the tenant and super tenant versions and set them into the appropriate outgoing headers
+		String tenantVersion = ServiceThreadLocal.getTenantArtifactVersion();
+		if (tenantVersion != null && !tenantVersion.trim().isEmpty()) {
+			MultivaluedMap<String,Object> outgoingHeaders = requestContext.getHeaders();
+			outgoingHeaders.putSingle(MainServletFilter.HEADER_TENANT_ARTIFACT_VERSION, tenantVersion);
+		}
+
+		String superTenantVersion = ServiceThreadLocal.getSuperTenantArtifactVersion();
+		if (superTenantVersion != null && !superTenantVersion.trim().isEmpty()) {
+			MultivaluedMap<String,Object> outgoingHeaders = requestContext.getHeaders();
+			outgoingHeaders.putSingle(MainServletFilter.HEADER_SUPER_TENANT_ARTIFACT_VERSION, superTenantVersion);
+		}
 
 		// Propagate specific headers to outgoing client request if present.
 		Map<String,String> headersToPropagate = ServiceThreadLocal.getRequestHeaders();

@@ -35,6 +35,8 @@ public class ServiceThreadLocalCopier {
 	private Integer annotatorCount;
 	private static String correlationId;
 	private static String requestId;
+	private static String tenantArtifactVersion;
+	private static String superTenantArtifactVersion;
 	private final Map<String,String> requestHeaders = new HashMap<String,String>();
 
 	public ServiceThreadLocalCopier (){
@@ -43,6 +45,8 @@ public class ServiceThreadLocalCopier {
 		inputTextSize = ServiceThreadLocal.getInputTextSize();
 		correlationId = ServiceThreadLocal.getCorrelationId();
 		requestId = ServiceThreadLocal.getRequestId();
+		tenantArtifactVersion = ServiceThreadLocal.getTenantArtifactVersion();
+		superTenantArtifactVersion = ServiceThreadLocal.getSuperTenantArtifactVersion();
 		Map<String, String> headers = ServiceThreadLocal.getRequestHeaders();
 
 		if ( headers != null ) {
@@ -58,6 +62,8 @@ public class ServiceThreadLocalCopier {
 		ServiceThreadLocal.setRequestId(requestId);
 		ServiceThreadLocal.setInputTextSize(inputTextSize);
 		ServiceThreadLocal.setRequestHeaders(requestHeaders);
+		ServiceThreadLocal.setTenantArtifactVersion(tenantArtifactVersion);
+		ServiceThreadLocal.setSuperTenantArtifactVersion(superTenantArtifactVersion);
 
 		// Add parent thread's mdc map copy to this thread
 		MDC.setContextMap(mdcMap);

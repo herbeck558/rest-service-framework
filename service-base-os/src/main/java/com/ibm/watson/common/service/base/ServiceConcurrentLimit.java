@@ -44,10 +44,14 @@ public class ServiceConcurrentLimit {
 
 	private static volatile ServiceConcurrentLimit instance;
 
+	public static final String CONTAINER_CPU_LIMIT = "com_ibm_watson_health_services_container_cpu_limit";
+
 	public static final String CONCURRENT_REJECT_THRESHOLD = "com_ibm_watson_health_common_concurrent_reject_threshold";
 	public static final String CONCURRENT_BLOCKING_THRESHOLD = "com_ibm_watson_health_common_concurrent_blocking_threshold"; // Must be <= com_ibm_watson_health_common_concurrent_reject_threshold
 	public static final String CONCURRENT_URL_PATTERN_LIST = "com_ibm_watson_health_common_concurrent_uri_pattern_list";
 
+	private int containerCpuCores;
+	
 	private Semaphore concurrentBlockingSema;
 	private volatile Object concurrentRequestsLock = new Object();  // Used to synchronize the counters below
 	private volatile int concurrentRequests;
@@ -94,6 +98,31 @@ public class ServiceConcurrentLimit {
 			return;
 		}
 
+		// Load Container CPU limit value (could be in millicores with an 'm' suffix)
+		String containerCpuLimitProperty = serviceProperties.getProperty(CONTAINER_CPU_LIMIT);
+		try {
+			if(containerCpuLimitProperty != null && !containerCpuLimitProperty.trim().isEmpty()) {
+				containerCpuLimitProperty = containerCpuLimitProperty.trim();
+				logger.info("Container CPU limit ("+CONTAINER_CPU_LIMIT+"): "+containerCpuLimitProperty);
+				if(containerCpuLimitProperty.endsWith("m")) {
+					// Convert from millicore units to an integer
+					containerCpuCores = Math.round(Float.valueOf(containerCpuLimitProperty.substring(0, containerCpuLimitProperty.length()-1))/1000);
+				}
+				else {
+					containerCpuCores = Math.round(Float.valueOf(containerCpuLimitProperty));
+				}
+				if(containerCpuCores <= 0) {
+					containerCpuCores = 1;
+				}
+				logger.info("Container CPU cores="+containerCpuCores);
+			}
+		}
+		catch(NumberFormatException e) {
+			logger.error("Format exception for service property \""+CONTAINER_CPU_LIMIT+"\", value="+containerCpuLimitProperty);
+			throw new IllegalArgumentException("Format exception for service property CONTAINER_CPU_LIMIT, value="+
+					containerCpuLimitProperty, e);
+		}
+
 		// Load concurrent blocking threshold service property
 		String concurretBlockedMaxProperty = serviceProperties.getProperty(CONCURRENT_BLOCKING_THRESHOLD, "0");
 		try {
@@ -105,6 +134,13 @@ public class ServiceConcurrentLimit {
 				throw new IllegalArgumentException("Invalid value for service property \""+CONCURRENT_BLOCKING_THRESHOLD+"\", value="+
 						concurrentBlockingThreshold+", must be < \""+CONCURRENT_REJECT_THRESHOLD+"\", value="+concurrentRejectThreshold);
 			}
+			
+			// Override concurrentBlockingThreshold if containerCpuCores was specified and is less than concurrentBlockingThreshold
+			if( (containerCpuCores > 0) && (containerCpuCores < concurrentBlockingThreshold) ) {
+				concurrentBlockingThreshold = containerCpuCores;
+				logger.info("Concurrent blocking threshold is being limited by container CPU limit, value="+concurrentBlockingThreshold);
+			}
+			
 			if((concurrentBlockingThreshold > 0) && (concurrentBlockingThreshold != concurrentRejectThreshold)) {
 				concurrentBlockingThresholdEnabled = true;
 				concurrentBlockingSema = new Semaphore(concurrentBlockingThreshold, true);

@@ -24,8 +24,11 @@ public class ServiceThreadLocal {
 	private static final ThreadLocal<Integer> threadAnnotatorCount= new ThreadLocal<>();
 	private static final ThreadLocal<String> threadCorrelationId = new ThreadLocal<>();
 	private static final ThreadLocal<String> threadRequestId = new ThreadLocal<>();
+	private static final ThreadLocal<String> threadTenantArtifactVersion = new ThreadLocal<>();
+	private static final ThreadLocal<String> threadSuperTenantArtifactVersion = new ThreadLocal<>();
 	private static final ThreadLocal<Map<String,String>> threadRequestHeaders = new ThreadLocal<>();
 	private static final ThreadLocal<Map<String,String>> threadWatsonUserInfoMap = new ThreadLocal<>();
+	private static final ThreadLocal<Boolean> threadDebug = new ThreadLocal<>();
 
 	/**
 	 * Returns the thread-local variable for count of the number of annotators found within the pipeline request flow.
@@ -86,23 +89,71 @@ public class ServiceThreadLocal {
 	/**
 	 * Gets the thread-local variable for request ID.  The request ID is unique for every request and it is
 	 * not passed to other services.
-	 * 
+	 *
 	 * @return Request ID if present or null if not
 	 */
 	public static String getRequestId() {
 		return threadRequestId.get();
 	}
-	
+
 	/**
 	 * Sets the thread-local variable for request ID.  This should be set to a unique id for every request
 	 * and should not be passed in or out of the service through HTTP headers.
-	 * 
+	 *
 	 * @param requestId Request ID
 	 */
 	public static void setRequestId(String requestId) {
 		threadRequestId.set(requestId);
 	}
+
+	/**
+	 * Gets the thread local tenant artifact version.  The tenant version is unique for every request.
+	 * @return
+	 */
+	public static String getTenantArtifactVersion() {
+		return threadTenantArtifactVersion.get();
+	}
+
+	/**
+	 * Sets the thread local tenant artifact version.  This will be unique for every request.
+	 * @param tenantArtifactVersion
+	 */
+	public static void setTenantArtifactVersion(String tenantArtifactVersion) {
+		threadTenantArtifactVersion.set(tenantArtifactVersion);
+	}
+
+	/**
+	 * Gets the thread local super tenant artifact version.  This will be unique for every request.
+	 * @return
+	 */
+	public static String getSuperTenantArtifactVersion() {
+		return threadSuperTenantArtifactVersion.get();
+	}
+
+	/**
+	 * Sets the thread local super tenant artifact version.  This will be unique for every request.
+	 * @param superTenantArtifactVersion
+	 */
+	public static void setSuperTenantArtifactVersion(String superTenantArtifactVersion) {
+		threadSuperTenantArtifactVersion.set(superTenantArtifactVersion);
+	}
 	
+	/**
+	 * Indicates if the debug flag is set for this thread
+	 * @return
+	 */
+	public static Boolean getThreadDebug() {
+	  return threadDebug.get();
+	}
+	
+	/**
+	 * Sets the debug flag for this thread
+	 * @param debug
+	 */
+	public static void setThreadDebug(Boolean debug) {
+	  threadDebug.set(debug);
+	}
+
 	/**
 	 * Gets the thread-local variable for request headers.
 	 *
@@ -159,10 +210,13 @@ public class ServiceThreadLocal {
 			ServiceThreadLocal.setCorrelationId(null);
 			ServiceThreadLocal.setRequestId(null);
 			ServiceThreadLocal.setRequestHeaders(null);
+			ServiceThreadLocal.setTenantArtifactVersion(null);
+			ServiceThreadLocal.setSuperTenantArtifactVersion(null);
+			ServiceThreadLocal.setThreadDebug(null);
 			// TODO Why is parse exception here?
 			} catch (ParseException e) {
-			ServiceError se = new ServiceError().setCode(Status.INTERNAL_SERVER_ERROR.getStatusCode()).setMessage(Status.INTERNAL_SERVER_ERROR.getReasonPhrase()).setDescription("Exception while processing thread-local cleanup: " + e.toString());
-			return Response.status(se.getCode()).entity(se).build();
+			  ServiceError se = new ServiceError().setCode(Status.INTERNAL_SERVER_ERROR.getStatusCode()).setMessage(Status.INTERNAL_SERVER_ERROR.getReasonPhrase()).setDescription("Exception while processing thread-local cleanup: " + e.toString());
+			  return Response.status(se.getCode()).entity(se).build();
 		}
 
 		return null;

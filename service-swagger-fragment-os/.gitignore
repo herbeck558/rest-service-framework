@@ -1,5 +1,6 @@
 # Compiled class file
 *.class
+/.apt_generated_tests/
 
 # Log file
 *.log

@@ -240,10 +240,9 @@ public class ActivityTracker {
 			String initatorID = headerInfo.get("bluemix-iamid");
 			String initiatorName = headerInfo.get("bluemix-subject");;
 			String initiatorSourceIPAddress = getSourceIPAddress(request);
+			JSONObject event = new JSONObject();
 
 			logger.debug("serviceProperties = " + serviceContext.getServiceProperties());
-
-			Map<String, Object> payload = new HashMap<>();
 
 			String actionMsg = serviceProviderName;
 			if (actionMsg != null) {
@@ -251,15 +250,16 @@ public class ActivityTracker {
 			} else {
 				actionMsg = objectType + "." + action.name();
 			}
-			payload.put("action", actionMsg);
-
-			payload.put("dataEvent", dataEventFlag);
-			
-			payload.put("eventTime", dateFormat(instant.toEpochMilli()));
-
 			if (instanceCRN != null) {
-				payload.put("logSourceCRN", instanceCRN);
+				event.put("logSourceCRN", instanceCRN);
 			}
+			boolean saveServiceCopyValue = (dataEventFlag == true) ? false : true;
+			event.put("saveServiceCopy", saveServiceCopyValue);
+			event.put("action", actionMsg);
+
+			event.put("dataEvent", dataEventFlag);
+			
+			event.put("eventTime", dateFormat(instant.toEpochMilli()));
 
 			//   format is:    serviceName: action objectType target.name [custom data per service][-outcome]
 			String message = serviceCatalogName;
@@ -276,7 +276,7 @@ public class ActivityTracker {
 			} else {
 				message = ": " + action.name() + " " + objectType;
 			}
-			payload.put("message", message);
+			event.put("message", message);
 
 			Map<String, Object> initiator = new HashMap<>();
 			if (initatorID != null) {
@@ -297,29 +297,26 @@ public class ActivityTracker {
 			//initiator.host.address: originating IP address
 			if (initiatorSourceIPAddress != null) {
 				host.put("address", initiatorSourceIPAddress);
+				host.put("addressType", "IPv4");
 				initiator.put("host", host);
 			}
-			payload.put("initiator", initiator);
+			event.put("initiator", initiator);
 
 			Map<String, String> observer = new HashMap<>();
 			observer.put("name", "ActivityTracker");
-			payload.put("observer", observer);
+			event.put("observer", observer);
 			
-			payload.put("outcome", outcome.name());
+			event.put("outcome", outcome.name());
 
-			Map<String, String> reason = new HashMap<>();
-			reason.put("reasonCode", reasonCode.toString());
+			Map<String, Object> reason = new HashMap<>();
+			reason.put("reasonCode", reasonCode);
 			Status status = Status.fromStatusCode(reasonCode);
 			if (status != null) {
 				reason.put("reasonType", status.toString());
 			}
-			payload.put("reason", reason);
+			event.put("reason", reason);
 
 			Map<String, Object> requestData = new HashMap<>();
-			//String resourceGroupId = headerInfo.get("bluemix-resource-group");
-			//if (resourceGroupId != null) {
-			//	requestData.put("resourceGroupId", resourceGroupId)
-			//}
 			if (action == ActivityTracker.Action.update) {
 				requestData.put("updateType", StringUtils.capitalize(objectType.toString()) + " changed");
 				if (initialValue != null) {
@@ -339,22 +336,22 @@ public class ActivityTracker {
 			if (resourceType!= null) {
 				requestData.put("resourceType", resourceType);
 			}
-			payload.put("requestData", requestData);
+			event.put("requestData", requestData);
 
 			Map<String, Object> responseData = new HashMap<>();
-			payload.put("responseData", responseData);
+			event.put("responseData", responseData);
 
-			boolean saveServiceCopyValue = (dataEventFlag == true) ? false : true;
-			payload.put("saveServiceCopy", saveServiceCopyValue);
-
-			payload.put("severity", severity.name());
+			event.put("severity", severity.name());
 
 			Map<String, String> target = new HashMap<>();
 			if (instanceCRN != null) {
 				String resourceCRN = addResourceValuesTo(instanceCRN, objectType, objectName);
 				target.put("id", resourceCRN);
 			}
-			
+			String resourceGroupId = headerInfo.get("bluemix-resource-group");
+			if (resourceGroupId != null) {
+				target.put("resourceGroupId", resourceGroupId);
+			}
 			if (objectName != null) {
 				target.put("name", objectName);
 			}
@@ -369,10 +366,9 @@ public class ActivityTracker {
 				typeURI = objectType;
 			}
 			target.put("typeURI", typeURI);
-			payload.put("target", target);
+			event.put("target", target);
 
-			JSONObject event = new JSONObject();
-			event.put("payload", payload);
+//			event.put("payload", payload);
 			atlogger.info(event.toString());
 		}
 	}

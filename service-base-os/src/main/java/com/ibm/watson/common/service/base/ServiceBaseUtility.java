@@ -8,6 +8,7 @@ package com.ibm.watson.common.service.base;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -120,5 +121,28 @@ public class ServiceBaseUtility {
 	public static String getCorrelationId() {
 		return (String) ServiceThreadLocal.getCorrelationId();
 	}
+  
+  /**
+   * Given a message, this method will return a timestamped version of it.
+   * @param message
+   * @return
+   */
+  public static String createTimestampedMessage(String message) {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss:S");
+    String timestamp = sdf.format(new Date());
+    return timestamp + ": " + message;
+  }
+  
+  /**
+   * Returns the debug setting for the current thread
+   * @return
+   */
+  private static boolean isThreadDebugEnabled() {
+    Boolean threadDebug = ServiceThreadLocal.getThreadDebug();
+    if (threadDebug == null) {
+      return false;
+    }
+    return threadDebug;
+  }
 
 }

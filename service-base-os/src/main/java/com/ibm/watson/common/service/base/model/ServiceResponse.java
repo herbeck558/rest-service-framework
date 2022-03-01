@@ -83,7 +83,7 @@ public class ServiceResponse implements Serializable {
 	public ResponseBuilder createBuilder() {
 
 		ResponseBuilder rb = Response.status(code);
-		rb.header("Access-Control-Allow-Origin", "*");  // TODO hack to get around browser cross domain issue.
+//		rb.header("Access-Control-Allow-Origin", "*");  // TODO hack to get around browser cross domain issue.
 		rb.entity(this);
 
 		return rb;
