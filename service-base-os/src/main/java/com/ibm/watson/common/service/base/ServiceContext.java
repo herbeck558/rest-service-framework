@@ -194,7 +194,7 @@ public class ServiceContext {
 			}
 			
 			// Process enable metrics property
-			String enableMetricsProperty = serviceProperties.getProperty(ENABLE_METRICS_PROPERTY, "false");
+			String enableMetricsProperty = serviceProperties.getProperty(ENABLE_METRICS_PROPERTY, "true");
 			if (!enableMetricsProperty.equals("true") && !enableMetricsProperty.equals("false")) {
 				logger.error("Error, invalid property value for " + ENABLE_METRICS_PROPERTY + ", value=" + enableMetricsProperty + ", must be true or false");
 				throw new IllegalArgumentException("Invalid property value for " + ENABLE_METRICS_PROPERTY +
